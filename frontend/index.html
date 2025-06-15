@@ -1,0 +1,346 @@
+<!-- frontend/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Excel AI Assistant</title>
+    <!-- Include Font Awesome for icons (sun/moon) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Include Tailwind CSS for quick styling -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Custom CSS variables for theme switching */
+        :root {
+            /* Dark Mode (default) */
+            --bg-body: #1a202c;
+            --text-body: #e2e8f0;
+            --bg-card: #2d3748;
+            --border-color: #4a5568;
+            --input-bg: #2d3748;
+            --input-border: #4a5568;
+            --placeholder-color: #a0aec0;
+            --btn-primary-bg: #4299e1;
+            --btn-primary-hover-bg: #3182ce;
+            --table-header-bg: #4a5568;
+            --table-even-row-bg: #2d3748;
+            --table-hover-bg: #4a5568;
+            --error-bg: #dc2626; /* red-600 */
+            --success-bg: #16a34a; /* green-600 */
+            --spinner-border-left: #4299e1;
+        }
+
+        /* Light Mode overrides */
+        body.light-mode {
+            --bg-body: #FFFACD; /* Light yellow background (Lemon Chiffon) */
+            --text-body: #2d3748; /* dark text */
+            --bg-card: #ffffff; /* white card background */
+            --border-color: #e2e8f0;
+            --input-bg: #f0f4f8; /* light input background */
+            --input-border: #cbd5e0;
+            --placeholder-color: #718096;
+            --btn-primary-bg: #63b3ed; /* lighter blue */
+            --btn-primary-hover-bg: #4299e1;
+            --table-header-bg: #e2e8f0;
+            --table-even-row-bg: #edf2f7;
+            --table-hover-bg: #cbd5e0;
+            --error-bg: #ef4444; /* red-500 */
+            --success-bg: #22c55e; /* green-500 */
+            --spinner-border-left: #63b3ed;
+        }
+
+        /* Apply CSS variables */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-body);
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+        }
+        .card {
+            background-color: var(--bg-card);
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: var(--btn-primary-bg);
+            color: white;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: var(--btn-primary-hover-bg);
+        }
+        /* Custom file input styling */
+        .custom-file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+        .custom-file-input-wrapper input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            z-index: 2; /* Ensure it's above the button */
+        }
+        .custom-file-input-button {
+            display: flex; /* Use flexbox for centering content */
+            flex-direction: column; /* Stack content vertically */
+            align-items: center; /* Center horizontally */
+            justify-content: center; /* Center vertically */
+            background-color: var(--input-bg);
+            border: 2px dashed var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            text-align: center;
+            color: var(--text-body);
+            cursor: pointer;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+            min-height: 80px; /* Give it a minimum height */
+            box-sizing: border-box; /* Include padding in height */
+        }
+        .custom-file-input-button:hover {
+            border-color: var(--btn-primary-bg);
+            background-color: var(--border-color); /* Slightly change bg on hover */
+        }
+        .custom-file-input-button i { /* Icon style */
+            font-size: 2rem; /* Larger icon */
+            margin-bottom: 0.5rem;
+            color: var(--btn-primary-bg); /* Use primary button color for icon */
+        }
+        .custom-file-input-button span {
+            display: block;
+            font-size: 0.875rem; /* text-sm */
+            color: var(--placeholder-color);
+        }
+        .custom-file-input-button .file-name {
+            font-weight: 500;
+            color: var(--text-body);
+            margin-top: 0; /* Override default span margin-top */
+        }
+
+        input[type="text"], textarea, select {
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            color: var(--text-body);
+            resize: vertical; /* Allow vertical resizing */
+        }
+        /* Adjusted placeholder font size specifically for text inputs and textareas */
+        input[type="text"]::placeholder {
+            font-size: 0.95rem; /* Slightly reduced for text input to fit content better */
+            color: var(--placeholder-color);
+            opacity: 1;
+        }
+        textarea::placeholder {
+            font-size: 1rem; /* Kept 1rem for textarea as it has more space */
+            color: var(--placeholder-color);
+            opacity: 1;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--spinner-border-left);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        /* Scrollbar style for result display area */
+        #ai-response {
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 250px;
+            overflow-y: auto;
+            background-color: var(--bg-card); /* Use card background for consistency */
+            border: 1px solid var(--border-color);
+        }
+        /* Column names display style */
+        #column-names {
+            max-height: 120px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            background-color: var(--bg-card);
+            text-align: left;
+            font-size: 0.875rem;
+            color: var(--text-body);
+        }
+        /* New table style */
+        .data-table-container {
+            max-height: 250px;
+            overflow-y: auto;
+            background-color: var(--bg-card);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.875rem;
+        }
+        .data-table th, .data-table td {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+        .data-table th {
+            background-color: var(--table-header-bg);
+            font-weight: 600;
+            color: var(--text-body);
+        }
+        .data-table tr:nth-child(even) {
+            background-color: var(--table-even-row-bg);
+        }
+        .data-table tr:hover {
+            background-color: var(--table-hover-bg);
+        }
+        /* Select/Option group styling */
+        .select-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        .select-group label {
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-body);
+        }
+        .select-group select {
+            width: 100%;
+            padding-right: 2.5rem;
+            /* Using currentColor to adapt to text color */
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 0.8em 0.8em;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        .select-group input[type="text"] {
+            margin-top: 0.5rem;
+        }
+        h2 {
+            color: var(--text-body);
+            font-weight: 700;
+        }
+        #error-message {
+            background-color: var(--error-bg);
+        }
+        #success-message {
+            background-color: var(--success-bg);
+        }
+
+        /* Theme Toggle Button Styling */
+        #theme-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-body);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.25rem;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        #theme-toggle:hover {
+            background-color: var(--table-hover-bg);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4 dark-mode"> <!-- Added dark-mode as default -->
+    <div class="card w-full max-w-2xl p-6 space-y-6 text-center">
+        <!-- Theme Toggle Button -->
+        <div id="theme-toggle" title="Toggle Theme">
+            <i class="fas fa-sun hidden"></i> <!-- Sun icon (for dark mode) -->
+            <i class="fas fa-moon hidden"></i> <!-- Moon icon (for light mode) -->
+        </div>
+
+        <h1 class="text-3xl font-bold mb-4">Excel AI Processor</h1>
+
+        <div id="loading" class="hidden flex items-center justify-center space-x-2 mb-4">
+            <div class="spinner"></div>
+            <span>Processing, please wait...</span>
+        </div>
+
+        <div id="error-message" class="hidden bg-red-600 p-3 rounded-lg text-white mb-4"></div>
+        <div id="success-message" class="hidden bg-green-600 p-3 rounded-lg text-white mb-4"></div>
+
+        <form id="uploadForm" class="space-y-4">
+            <!-- Custom file input for consistent styling and text -->
+            <div class="custom-file-input-wrapper">
+                <input type="file" id="excelFile" accept=".xlsx, .xls">
+                <div class="custom-file-input-button">
+                    <i class="fas fa-upload"></i> <!-- Upload icon -->
+                    <span id="file-name-display" class="file-name">No file chosen</span>
+                    <span>Click to select an Excel file</span>
+                </div>
+            </div>
+
+            <input type="text" id="sheetName" class="w-full" placeholder="Enter Excel sheet name (e.g., Sheet1, SalesData). Leave blank to read the first sheet.">
+
+            <!-- Display detected column names -->
+            <div id="column-names-container" class="text-left hidden">
+                <h3 class="text-lg font-semibold mb-2">Detected Column Names:</h3>
+                <div id="column-names" class="text-sm"></div>
+                <p class="text-xs text-gray-400 mt-2">AI will refer to these actual column names to execute your command.</p>
+            </div>
+
+            <textarea id="aiCommand" rows="4" class="w-full" placeholder="Enter AI command here, e.g.: 'Extract unique company names from Unnamed: 2 and Cali columns and output as a list.' or 'Calculate the average of the H1B column.'"></textarea>
+
+            <!-- Result output mode dropdown -->
+            <div class="select-group text-left">
+                <label for="outputMode">Select Result Output Method:</label>
+                <select id="outputMode" class="w-full">
+                    <option value="new_sheet_original_file">Add new sheet to original Excel file</option>
+                    <option value="new_excel_file">Create new Excel file (results only)</option>
+                    <option value="new_column_original_sheet">Add new column to original sheet</option>
+                </select>
+                <!-- New column name input field, hidden by default -->
+                <input type="text" id="newColumnName" class="w-full hidden mt-2" placeholder="Enter new column name (e.g., Sentiment Score, Unique Companies List)">
+            </div>
+
+            <button type="submit" class="btn-primary w-full">Start AI Processing</button>
+        </form>
+
+        <div id="result" class="mt-6 text-left hidden">
+            <h2 class="text-2xl font-semibold mb-3">Data Preview (First 5 Rows):</h2>
+            <div id="data-preview-table-container" class="data-table-container"></div>
+
+            <h2 class="text-2xl font-semibold mt-6 mb-3">AI Processing Result:</h2>
+            <pre id="ai-response" class="bg-gray-800 p-4 rounded-lg overflow-x-auto text-sm"></pre>
+
+            <!-- Download result button container -->
+            <div id="download-container" class="hidden mt-4 text-center">
+                <a id="download-link" class="btn-primary inline-block cursor-pointer" download>
+                    Download AI Processed Result (Excel File)
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
