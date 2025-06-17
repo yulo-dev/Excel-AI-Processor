@@ -1,13 +1,13 @@
 # Smart Excel AI Assistant
 
-## Project Overview
+## ☀️ Project Overview
 
 **Smart Excel AI Assistant** is a web-based application that brings natural language AI capabilities to Excel file processing. Users can upload `.xlsx` or `.xls` files, enter intuitive commands in natural language, and receive transformed or extracted data based on those instructions. The goal is to simplify complex Excel tasks by leveraging AI for intelligent data extraction, transformation, and automation.
 
 This project bridges the gap between traditional spreadsheet manipulation and modern AI-powered workflows—making data processing more efficient and user-friendly.
 
 
-## Features
+## ☀️ Features
 
 - **Excel File Upload**  
   Upload `.xlsx` or `.xls` files directly through the interface.
@@ -38,7 +38,7 @@ This project bridges the gap between traditional spreadsheet manipulation and mo
   Switch between light and dark themes with saved preferences for a personalized experience.
 
 
-## Technologies Used
+## ☀️ Technologies Used
 
 ### Backend (Python + Flask)
 
@@ -59,7 +59,7 @@ This project bridges the gap between traditional spreadsheet manipulation and mo
 - **Font Awesome** — For intuitive iconography (upload, moon/sun toggle, etc.)
 
 
-## Folder Structure (Suggested)
+## ☀️ Folder Structure (Suggested)
 
 ```bash
 smart-excel-ai/
@@ -73,3 +73,9 @@ smart-excel-ai/
 │   ├── script.js
 │   └── styles.css (if needed)
 └── README.md
+
+```
+
+## 🛠 Maintained by Noelle Lo
+
+✨ Building full-stack tools that blend natural language AI with real-world use cases like Excel 
