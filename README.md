@@ -1,8 +1,8 @@
-# Smart Excel AI Assistant
+# Xcelerate - Smart Excel AI Assistant
 
 ## ☀️ Project Overview
 
-**Smart Excel AI Assistant** is a full-stack project I built to explore how generative AI can simplify Excel workflows using natural language. It enables users to upload .xlsx or .xls files and issue commands in plain English to extract, transform, or manipulate data using AI. that brings the power of natural language AI to Excel file processing. It enables users to upload .xlsx or .xls files and issue commands in plain English to extract, transform, or manipulate data using AI.
+**Xcelerate** is a full-stack project I built to explore how generative AI can simplify Excel workflows using natural language. It enables users to upload .xlsx or .xls files and issue commands in plain English to extract, transform, or manipulate data using AI. that brings the power of natural language AI to Excel file processing. It enables users to upload .xlsx or .xls files and issue commands in plain English to extract, transform, or manipulate data using AI.
 
 This project bridges the gap between manual spreadsheet operations and modern AI workflows, making Excel data processing faster, more intuitive, and more intelligent.
 
