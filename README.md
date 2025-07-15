@@ -76,6 +76,6 @@ smart-excel-ai/
 
 ```
 
-## 🛠 Maintained by Noelle Lo
+ 🛠 **Maintained by Yulo L.**
 
 ✨ Building full-stack tools that blend natural language AI with real-world use cases like Excel 
