@@ -59,8 +59,7 @@ This project bridges the gap between manual spreadsheet operations and modern AI
 - **Font Awesome** — For intuitive iconography (upload, moon/sun toggle, etc.)
 
 
-## ☀️ Folder Structure (Suggested)
-
+## ☀️ Folder Structure 
 ```bash
 smart-excel-ai/
 ├── backend/
