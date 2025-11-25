@@ -1,346 +1,316 @@
-<!-- frontend/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Excel AI Assistant</title>
-    <!-- Include Font Awesome for icons (sun/moon) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Include Tailwind CSS for quick styling -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Xcelerate | Intelligent Data Processing</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            900: '#064e3b',
+                        },
+                        dark: {
+                            bg: '#0f172a',    // Slate 900
+                            card: '#1e293b',  // Slate 800
+                            input: '#334155', // Slate 700
+                            text: '#f1f5f9'   // Slate 100
+                        }
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(16, 185, 129, 0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        /* Custom CSS variables for theme switching */
-        :root {
-            /* Dark Mode (default) */
-            --bg-body: #1a202c;
-            --text-body: #e2e8f0;
-            --bg-card: #2d3748;
-            --border-color: #4a5568;
-            --input-bg: #2d3748;
-            --input-border: #4a5568;
-            --placeholder-color: #a0aec0;
-            --btn-primary-bg: #4299e1;
-            --btn-primary-hover-bg: #3182ce;
-            --table-header-bg: #4a5568;
-            --table-even-row-bg: #2d3748;
-            --table-hover-bg: #4a5568;
-            --error-bg: #dc2626; /* red-600 */
-            --success-bg: #16a34a; /* green-600 */
-            --spinner-border-left: #4299e1;
-        }
-
-        /* Light Mode overrides */
-        body.light-mode {
-            --bg-body: #FFFACD; /* Light yellow background (Lemon Chiffon) */
-            --text-body: #2d3748; /* dark text */
-            --bg-card: #ffffff; /* white card background */
-            --border-color: #e2e8f0;
-            --input-bg: #f0f4f8; /* light input background */
-            --input-border: #cbd5e0;
-            --placeholder-color: #718096;
-            --btn-primary-bg: #63b3ed; /* lighter blue */
-            --btn-primary-hover-bg: #4299e1;
-            --table-header-bg: #e2e8f0;
-            --table-even-row-bg: #edf2f7;
-            --table-hover-bg: #cbd5e0;
-            --error-bg: #ef4444; /* red-500 */
-            --success-bg: #22c55e; /* green-500 */
-            --spinner-border-left: #63b3ed;
-        }
-
-        /* Apply CSS variables */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-body);
-            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
-        }
-        .card {
-            background-color: var(--bg-card);
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .btn-primary {
-            background-color: var(--btn-primary-bg);
-            color: white;
-            border-radius: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            transition: background-color 0.3s ease;
-        }
-        .btn-primary:hover {
-            background-color: var(--btn-primary-hover-bg);
-        }
-        /* Custom file input styling */
-        .custom-file-input-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-            width: 100%;
-        }
-        .custom-file-input-wrapper input[type="file"] {
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-            cursor: pointer;
-            width: 100%;
-            height: 100%;
-            z-index: 2; /* Ensure it's above the button */
-        }
-        .custom-file-input-button {
-            display: flex; /* Use flexbox for centering content */
-            flex-direction: column; /* Stack content vertically */
-            align-items: center; /* Center horizontally */
-            justify-content: center; /* Center vertically */
-            background-color: var(--input-bg);
-            border: 2px dashed var(--border-color);
-            border-radius: 0.5rem;
-            padding: 1rem;
-            text-align: center;
-            color: var(--text-body);
-            cursor: pointer;
-            transition: border-color 0.3s ease, background-color 0.3s ease;
-            min-height: 80px; /* Give it a minimum height */
-            box-sizing: border-box; /* Include padding in height */
-        }
-        .custom-file-input-button:hover {
-            border-color: var(--btn-primary-bg);
-            background-color: var(--border-color); /* Slightly change bg on hover */
-        }
-        .custom-file-input-button i { /* Icon style */
-            font-size: 2rem; /* Larger icon */
-            margin-bottom: 0.5rem;
-            color: var(--btn-primary-bg); /* Use primary button color for icon */
-        }
-        .custom-file-input-button span {
-            display: block;
-            font-size: 0.875rem; /* text-sm */
-            color: var(--placeholder-color);
-        }
-        .custom-file-input-button .file-name {
-            font-weight: 500;
-            color: var(--text-body);
-            margin-top: 0; /* Override default span margin-top */
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        input[type="text"], textarea, select {
-            background-color: var(--input-bg);
-            border: 1px solid var(--input-border);
-            border-radius: 0.5rem;
-            padding: 0.75rem;
-            color: var(--text-body);
-            resize: vertical; /* Allow vertical resizing */
-        }
-        /* Adjusted placeholder font size specifically for text inputs and textareas */
-        input[type="text"]::placeholder {
-            font-size: 0.95rem; /* Slightly reduced for text input to fit content better */
-            color: var(--placeholder-color);
-            opacity: 1;
-        }
-        textarea::placeholder {
-            font-size: 1rem; /* Kept 1rem for textarea as it has more space */
-            color: var(--placeholder-color);
-            opacity: 1;
+        /* Glassmorphism - Light Mode */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
         }
 
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: var(--spinner-border-left);
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
+        /* Glassmorphism - Dark Mode */
+        .dark-mode .glass-panel {
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.3);
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+
+        /* File Upload Zone - Default */
+        .file-drop-zone {
+            background-color: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            transition: all 0.3s ease;
         }
-        /* Scrollbar style for result display area */
-        #ai-response {
-            white-space: pre-wrap;
-            word-break: break-all;
-            max-height: 250px;
-            overflow-y: auto;
-            background-color: var(--bg-card); /* Use card background for consistency */
-            border: 1px solid var(--border-color);
+
+        /* File Upload Zone - Dark Mode */
+        .dark-mode .file-drop-zone {
+            background-color: #0f172a;
+            border: 2px dashed #475569;
         }
-        /* Column names display style */
-        #column-names {
-            max-height: 120px;
-            overflow-y: auto;
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            padding: 0.75rem;
-            background-color: var(--bg-card);
-            text-align: left;
-            font-size: 0.875rem;
-            color: var(--text-body);
+
+        .file-drop-zone:hover {
+            border-color: #10b981;
+            background-color: rgba(16, 185, 129, 0.05);
+            transform: translateY(-1px);
         }
-        /* New table style */
-        .data-table-container {
-            max-height: 250px;
-            overflow-y: auto;
-            background-color: var(--bg-card);
-            border-radius: 0.5rem;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-        }
-        .data-table {
+
+        /* Table Styling */
+        .modern-table {
             width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 0.875rem;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 0.85rem;
         }
-        .data-table th, .data-table td {
-            padding: 0.5rem 0.75rem;
-            border: 1px solid var(--border-color);
-            white-space: nowrap;
-        }
-        .data-table th {
-            background-color: var(--table-header-bg);
-            font-weight: 600;
-            color: var(--text-body);
-        }
-        .data-table tr:nth-child(even) {
-            background-color: var(--table-even-row-bg);
-        }
-        .data-table tr:hover {
-            background-color: var(--table-hover-bg);
-        }
-        /* Select/Option group styling */
-        .select-group {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            width: 100%;
-            margin-top: 1rem;
-        }
-        .select-group label {
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--text-body);
-        }
-        .select-group select {
-            width: 100%;
-            padding-right: 2.5rem;
-            /* Using currentColor to adapt to text color */
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 0.8em 0.8em;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-        }
-        .select-group input[type="text"] {
-            margin-top: 0.5rem;
-        }
-        h2 {
-            color: var(--text-body);
+        .modern-table th {
+            background-color: #f1f5f9;
+            color: #475569;
             font-weight: 700;
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
         }
-        #error-message {
-            background-color: var(--error-bg);
+        .dark-mode .modern-table th {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            border-bottom: 2px solid #334155;
         }
-        #success-message {
-            background-color: var(--success-bg);
+        .modern-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+        }
+        .dark-mode .modern-table td {
+            border-bottom: 1px solid #334155;
+            color: #cbd5e1;
         }
 
-        /* Theme Toggle Button Styling */
-        #theme-toggle {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-body);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.25rem;
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        /* Dark Mode Select Option Fix */
+        .dark-mode select option {
+            background-color: #1e293b;
+            color: #f1f5f9;
         }
-        #theme-toggle:hover {
-            background-color: var(--table-hover-bg);
+
+        /* Loading Spinner */
+        .loader {
+            width: 20px;
+            height: 20px;
+            border: 3px solid #10b981;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            display: inline-block;
+            animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4 dark-mode"> <!-- Added dark-mode as default -->
-    <div class="card w-full max-w-2xl p-6 space-y-6 text-center">
-        <!-- Theme Toggle Button -->
-        <div id="theme-toggle" title="Toggle Theme">
-            <i class="fas fa-sun hidden"></i> <!-- Sun icon (for dark mode) -->
-            <i class="fas fa-moon hidden"></i> <!-- Moon icon (for light mode) -->
+<body class="bg-slate-50 dark:bg-[#0b1120] text-slate-800 dark:text-slate-200 min-h-screen flex flex-col items-center justify-center p-4 md:p-8">
+
+    <div class="w-full max-w-6xl flex flex-col gap-6 animate-fade-in py-8">
+
+        <div class="flex justify-between items-center px-2">
+            <div class="flex flex-col">
+                <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white font-sans">
+                    Xcelerate<span class="text-brand-500">.</span>
+                </h1>
+                <p class="text-xs font-medium text-slate-500 dark:text-slate-400 tracking-widest uppercase mt-0.5">
+                    AI Data Workspace
+                </p>
+            </div>
         </div>
 
-        <h1 class="text-3xl font-bold mb-4">Excel AI Processor</h1>
+        <div class="glass-panel rounded-2xl p-6 md:p-10 shadow-xl shadow-slate-200/50 dark:shadow-none">
 
-        <div id="loading" class="hidden flex items-center justify-center space-x-2 mb-4">
-            <div class="spinner"></div>
-            <span>Processing, please wait...</span>
+            <div id="error-message" class="hidden mb-6 p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 flex items-center gap-3 text-sm">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>Error message here</span>
+            </div>
+            <div id="success-message" class="hidden mb-6 p-4 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 flex items-center gap-3 text-sm">
+                <i class="fas fa-check-circle"></i>
+                <span>Success message here</span>
+            </div>
+
+            <form id="uploadForm">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+
+                    <div class="lg:col-span-4 space-y-8 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-slate-700 pb-8 lg:pb-0 lg:pr-8">
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-800 dark:text-slate-200 mb-3">
+                                1. Upload Data
+                            </label>
+                            <div class="custom-file-input-wrapper relative h-40 w-full group">
+                                <input type="file" id="excelFile" accept=".xlsx, .xls" class="absolute inset-0 w-full h-full opacity-0 z-10 cursor-pointer">
+
+                                <div class="file-drop-zone absolute inset-0 rounded-xl flex flex-col items-center justify-center text-center p-4">
+                                    <div class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 flex items-center justify-center mb-3 shadow-sm group-hover:scale-110 transition-transform">
+                                        <i class="fas fa-file-excel text-slate-400 dark:text-slate-500 group-hover:text-brand-500 text-xl"></i>
+                                    </div>
+                                    <span id="file-name-display" class="text-sm font-medium text-slate-700 dark:text-slate-200 truncate max-w-[90%]">
+                                        Select Excel File
+                                    </span>
+                                    <span class="text-xs text-slate-500 dark:text-slate-400 mt-1">.xlsx or .xls</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-5">
+                            <label class="block text-sm font-semibold text-slate-800 dark:text-slate-200">
+                                2. Configuration
+                            </label>
+
+                            <div>
+                                <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1.5 block">Target Sheet</label>
+                                <input type="text" id="sheetName" class="w-full bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2.5 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none transition-all placeholder-slate-400" placeholder="Optional (Default: 1st Sheet)">
+                            </div>
+
+                            <div>
+                                <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1.5 block">Output Format</label>
+                                <div class="relative">
+                                    <select id="outputMode" class="w-full bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2.5 text-sm appearance-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none cursor-pointer">
+                                        <option value="new_sheet_original_file">Add as New Sheet</option>
+                                        <option value="new_excel_file">Create New File</option>
+                                        <option value="new_column_original_sheet">Append as Column</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                                        <i class="fas fa-chevron-down text-xs"></i>
+                                    </div>
+                                </div>
+                                <input type="text" id="newColumnName" class="hidden w-full mt-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-brand-300 dark:border-brand-700 rounded-lg px-3 py-2 text-sm focus:border-brand-500 outline-none placeholder-slate-400" placeholder="Enter Column Name">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-8 flex flex-col h-full">
+                        <div class="flex justify-between items-end mb-3">
+                            <label class="block text-sm font-semibold text-slate-800 dark:text-slate-200">
+                                3. Describe Your Task
+                            </label>
+                            <span class="text-xs text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-900/40 px-2 py-1 rounded-md font-medium border border-brand-100 dark:border-brand-800">
+                                Powered by Gemini 2.0
+                            </span>
+                        </div>
+
+                        <div class="relative flex-grow min-h-[250px] group">
+                            <textarea id="aiCommand" class="w-full h-full bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-600 rounded-xl p-5 text-base leading-relaxed focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none transition-all resize-none font-sans placeholder-slate-400"
+                            placeholder="What would you like to do with your data?&#10;&#10;Examples:&#10;• 'Clean the phone numbers in column D.'&#10;• 'Extract domain names from emails in column A.'&#10;• 'Classify the sentiment of feedback in the Comments column.'"></textarea>
+
+                            <div id="column-names-container" class="hidden absolute bottom-3 left-3 right-3 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border border-slate-200 dark:border-slate-600 rounded-lg p-3 shadow-lg transition-all z-20">
+                                <div class="flex items-center gap-2 mb-1.5">
+                                    <i class="fas fa-columns text-slate-400 text-xs"></i>
+                                    <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Detected Columns</span>
+                                </div>
+                                <div id="column-names" class="text-xs text-slate-500 dark:text-slate-400 font-mono leading-relaxed"></div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 flex flex-col sm:flex-row items-center gap-4">
+                            <button type="submit" class="w-full sm:w-auto flex-grow bg-slate-900 dark:bg-brand-600 hover:bg-slate-800 dark:hover:bg-brand-500 text-white font-medium py-3.5 px-6 rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2.5">
+                                <i class="fas fa-sparkles text-brand-400 dark:text-white text-sm"></i>
+                                <span id="btn-text">Run Process</span>
+                            </button>
+
+                            <div id="loading" class="hidden flex items-center gap-3 px-4">
+                                <span class="loader"></span>
+                                <span class="text-sm font-medium text-slate-500 dark:text-slate-400 animate-pulse">Processing...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
 
-        <div id="error-message" class="hidden bg-red-600 p-3 rounded-lg text-white mb-4"></div>
-        <div id="success-message" class="hidden bg-green-600 p-3 rounded-lg text-white mb-4"></div>
-
-        <form id="uploadForm" class="space-y-4">
-            <!-- Custom file input for consistent styling and text -->
-            <div class="custom-file-input-wrapper">
-                <input type="file" id="excelFile" accept=".xlsx, .xls">
-                <div class="custom-file-input-button">
-                    <i class="fas fa-upload"></i> <!-- Upload icon -->
-                    <span id="file-name-display" class="file-name">No file chosen</span>
-                    <span>Click to select an Excel file</span>
+        <div id="result" class="hidden animate-fade-in space-y-6">
+            <div class="flex items-center justify-between px-2">
+                <h2 class="text-lg font-bold text-slate-800 dark:text-white">Results</h2>
+                <div id="download-container" class="hidden">
+                    <a id="download-link" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium py-2 px-5 rounded-lg transition-colors flex items-center gap-2 shadow-lg shadow-brand-500/20" href="#" download>
+                        <i class="fas fa-download"></i> Download Excel
+                    </a>
                 </div>
             </div>
 
-            <input type="text" id="sheetName" class="w-full" placeholder="Enter Excel sheet name (e.g., Sheet1, SalesData). Leave blank to read the first sheet.">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="glass-panel rounded-xl overflow-hidden flex flex-col h-[350px]">
+                    <div class="px-5 py-3 border-b border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 flex justify-between items-center">
+                        <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Preview</span>
+                    </div>
+                    <div id="data-preview-table-container" class="overflow-auto flex-grow p-0"></div>
+                </div>
 
-            <!-- Display detected column names -->
-            <div id="column-names-container" class="text-left hidden">
-                <h3 class="text-lg font-semibold mb-2">Detected Column Names:</h3>
-                <div id="column-names" class="text-sm"></div>
-                <p class="text-xs text-gray-400 mt-2">AI will refer to these actual column names to execute your command.</p>
-            </div>
-
-            <textarea id="aiCommand" rows="4" class="w-full" placeholder="Enter AI command here, e.g.: 'Extract unique company names from Unnamed: 2 and Cali columns and output as a list.' or 'Calculate the average of the H1B column.'"></textarea>
-
-            <!-- Result output mode dropdown -->
-            <div class="select-group text-left">
-                <label for="outputMode">Select Result Output Method:</label>
-                <select id="outputMode" class="w-full">
-                    <option value="new_sheet_original_file">Add new sheet to original Excel file</option>
-                    <option value="new_excel_file">Create new Excel file (results only)</option>
-                    <option value="new_column_original_sheet">Add new column to original sheet</option>
-                </select>
-                <!-- New column name input field, hidden by default -->
-                <input type="text" id="newColumnName" class="w-full hidden mt-2" placeholder="Enter new column name (e.g., Sentiment Score, Unique Companies List)">
-            </div>
-
-            <button type="submit" class="btn-primary w-full">Start AI Processing</button>
-        </form>
-
-        <div id="result" class="mt-6 text-left hidden">
-            <h2 class="text-2xl font-semibold mb-3">Data Preview (First 5 Rows):</h2>
-            <div id="data-preview-table-container" class="data-table-container"></div>
-
-            <h2 class="text-2xl font-semibold mt-6 mb-3">AI Processing Result:</h2>
-            <pre id="ai-response" class="bg-gray-800 p-4 rounded-lg overflow-x-auto text-sm"></pre>
-
-            <!-- Download result button container -->
-            <div id="download-container" class="hidden mt-4 text-center">
-                <a id="download-link" class="btn-primary inline-block cursor-pointer" download>
-                    Download AI Processed Result (Excel File)
-                </a>
+                <div class="glass-panel rounded-xl overflow-hidden flex flex-col h-[350px]">
+                    <div class="px-5 py-3 border-b border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 flex justify-between items-center">
+                        <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Process Log</span>
+                    </div>
+                    <pre id="ai-response" class="p-5 text-xs font-mono text-slate-600 dark:text-slate-300 bg-transparent h-full overflow-y-auto whitespace-pre-wrap"></pre>
+                </div>
             </div>
         </div>
+
+        <footer class="mt-auto pt-8 border-t border-slate-200 dark:border-slate-800/50 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500 dark:text-slate-400 pb-4">
+            <div>
+                &copy; 2025 Yu Lo. All rights reserved.
+            </div>
+            <div class="flex flex-wrap justify-center items-center gap-6">
+                <a href="https://github.com/yulo-dev" target="_blank" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-2">
+                    <i class="fab fa-github text-lg"></i> <span class="hidden sm:inline">GitHub</span>
+                </a>
+                <a href="https://www.linkedin.com/in/yu-lo/" target="_blank" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-2">
+                    <i class="fab fa-linkedin text-lg"></i> <span class="hidden sm:inline">LinkedIn</span>
+                </a>
+                <a href="https://yulo.im/" target="_blank" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-2">
+                    <i class="fas fa-globe text-lg"></i> <span class="hidden sm:inline">Portfolio</span>
+                </a>
+                <button onclick="navigator.clipboard.writeText('loyu.jobs@gmail.com'); alert('Email copied to clipboard!');" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-2 cursor-pointer group">
+                    <i class="fas fa-envelope group-hover:scale-110 transition-transform"></i>
+                    <span class="hidden sm:inline">loyu.jobs@gmail.com</span>
+                </button>
+            </div>
+        </footer>
+
     </div>
 
     <script src="script.js"></script>
+    <script>
+        const targetNode = document.getElementById('data-preview-table-container');
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'childList') {
+                    const table = targetNode.querySelector('table');
+                    if (table) table.classList.add('modern-table');
+                }
+            });
+        });
+        if (targetNode) observer.observe(targetNode, { childList: true });
+    </script>
 </body>
 </html>
